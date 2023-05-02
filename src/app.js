@@ -36,9 +36,9 @@ app.get('/strings/lower/:id', (req, res) => {
 });
 
 app.get('/strings/first-characters/:id', (req, res) => {
-  const n = req.query.length;
-  if (req.query.length) {
-    res.status(200).send({ result: firstCharacters(req.params.id, n) });
+  const query = req.query.length;
+  if (query) {
+    res.status(200).send({ result: firstCharacters(req.params.id, query) });
   } else {
     res.status(200).send({ result: firstCharacter(req.params.id) });
   }
@@ -48,9 +48,7 @@ app.get('/numbers/add/:a/and/:b', (req, res) => {
   if (Number.isNaN(Number(req.params.a)) || Number.isNaN(Number(req.params.b))) {
     res.status(400).send({ error: 'Parameters must be valid numbers.' });
   } else {
-    const a = Number(req.params.a);
-    const b = Number(req.params.b);
-    res.status(200).send({ result: add(a, b) });
+    res.status(200).send({ result: add(Number(req.params.a), Number(req.params.b)) });
   }
 });
 
@@ -58,9 +56,7 @@ app.get('/numbers/subtract/:a/from/:b', (req, res) => {
   if (Number.isNaN(Number(req.params.a)) || Number.isNaN(Number(req.params.b))) {
     res.status(400).send({ error: 'Parameters must be valid numbers.' });
   } else {
-    const a = Number(req.params.a);
-    const b = Number(req.params.b);
-    res.status(200).send({ result: subtract(b, a) });
+    res.status(200).send({ result: subtract(req.params.b, req.params.a) });
   }
 });
 
@@ -70,9 +66,7 @@ app.post('/numbers/multiply', (req, res) => {
   } else if (Number.isNaN(Number(req.body.a)) || Number.isNaN(Number(req.body.b))) {
     res.status(400).send({ error: 'Parameters "a" and "b" must be valid numbers.' });
   } else {
-    const a = Number(req.body.a);
-    const b = Number(req.body.b);
-    res.status(200).send({ result: multiply(a, b) });
+    res.status(200).send({ result: multiply(Number(req.body.a), Number(req.body.b)) });
   }
 });
 
@@ -88,9 +82,7 @@ app.post('/numbers/divide', (req, res) => {
   } else if (Number(req.body.a) === 0) {
     res.status(200).send({ result: 0 });
   } else {
-    const a = Number(req.body.a);
-    const b = Number(req.body.b);
-    res.status(200).send({ result: divide(a, b) });
+    res.status(200).send({ result: divide(req.body.a, req.body.b) });
   }
 });
 
@@ -153,11 +145,8 @@ app.post('/arrays/starts-with-vowel', (req, res) => {
 });
 
 app.post('/arrays/remove-element', (req, res) => {
-  if (!req.query.index) {
-    res.status(200).send({ result: removeNthElement(0, req.body.array) });
-  } else {
-    res.status(200).send({ result: removeNthElement(req.query.index, req.body.array) });
-  }
+  const index = req.query.index ? parseInt(req.query.index, 10) : 0;
+  res.status(200).json({ result: removeNthElement(index, req.body.array) });
 });
 
 module.exports = app;
